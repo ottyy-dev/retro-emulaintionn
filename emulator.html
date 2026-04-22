@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>RETRO GAME EMULAITOR</title>
+
+<style>
+body {
+  margin:0;
+  background: radial-gradient(circle at top,#1a1a1a,#000);
+  color:white;
+  font-family:Arial;
+}
+
+/* HEADER */
+header {
+  padding:18px;
+  font-size:26px;
+  text-align:center;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+/* CONSOLE SELECT */
+#consoles {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:10px;
+}
+
+.consoleBtn {
+  padding:12px 18px;
+  border:none;
+  border-radius:10px;
+  background:#222;
+  color:white;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.consoleBtn:hover {
+  background:#444;
+}
+
+/* ROM INPUT */
+#rom {
+  display:block;
+  margin:10px auto;
+  padding:8px;
+  background:#111;
+  border:1px solid #333;
+  color:white;
+}
+
+/* SCREEN */
+#screen {
+  width:900px;
+  height:520px;
+  margin:20px auto;
+  border:5px solid #333;
+  border-radius:14px;
+  background:black;
+  box-shadow:0 0 30px black;
+}
+
+/* STATUS */
+#status {
+  text-align:center;
+  opacity:0.8;
+  font-size:14px;
+}
+
+/* LIBRARY */
+#library {
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:15px;
+}
+
+.gameCard {
+  width:160px;
+  height:90px;
+  background:#111;
+  border:1px solid #333;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.gameCard:hover {
+  background:#222;
+  transform:scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<header>🎮RETRO EMULATION</header>
+
+<!-- CONSOLES -->
+<div id="consoles">
+  <button class="consoleBtn" onclick="setConsole('gba')">GBA</button>
+  <button class="consoleBtn" onclick="setConsole('nes')">NES</button>
+  <button class="consoleBtn" onclick="setConsole('snes')">SNES</button>
+</div>
+
+<!-- ROM -->
+<input type="file" id="rom">
+
+<div id="status">Selecione um console e carregue uma ROM</div>
+
+<!-- SCREEN -->
+<div id="screen"></div>
+
+<!-- LIBRARY VISUAL -->
+<div id="library">
+  <div class="gameCard" onclick="fakeGame('Mario')">😁 SUPER
+ EMULATOR</div>
+  <div class="gameCard" onclick="fakeGame('Zelda')">🗡 WEBSITE</div>
+  <div class="gameCard" onclick="fakeGame('Pokemon')">⚡ RAPIDO E
+ PONTENDE</div>
+</div>
+
+<script>
+
+let consoleType = "gba";
+
+/* CONSOLE SELECT */
+function setConsole(c){
+  consoleType = c;
+  document.getElementById("status").innerText =
+  "Console selecionado: " + c.toUpperCase();
+}
+
+/* LIBRARY FAKE UI */
+function fakeGame(name){
+  alert("Selecione ROM do jogo: " + name);
+}
+
+/* LOAD ROM */
+document.getElementById("rom").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const url = URL.createObjectURL(file);
+  startEmulator(url);
+});
+
+/* START EMULATOR */
+function startEmulator(rom){
+
+  document.getElementById("screen").innerHTML = "";
+  document.getElementById("status").innerText = "Carregando...";
+
+  window.EJS_player = "#screen";
+
+  if(consoleType === "gba") window.EJS_core = "gba";
+  if(consoleType === "nes") window.EJS_core = "nes";
+  if(consoleType === "snes") window.EJS_core = "snes";
+
+  window.EJS_gameUrl = rom;
+  window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+
+  const script = document.createElement("script");
+  script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+
+  script.onload = () => {
+    document.getElementById("status").innerText =
+    "Jogo carregado ✔ (" + consoleType.toUpperCase() + ")";
+  };
+
+  document.body.appendChild(script);
+}
+
+</script>
+
+</body>
+</html>
