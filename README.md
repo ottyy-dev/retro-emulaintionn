@@ -1,0 +1,2 @@
+# retro-emulaintionn
+emulador gerall
